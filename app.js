@@ -9,8 +9,6 @@ const jsonFile = require('jsonfile');
 const Feedback = require('./util/feedback');
 
 const app = express();
-const dataHandle = new DataStatistics();
-global.dataStatistics = dataHandle;
 global.feedback = new Feedback();
 
 jsonFile.readFile('data/allCookies.json')
@@ -28,7 +26,6 @@ jsonFile.readFile('data/cookie.json')
   });
 
 // 每5分钟存一下数据
-setInterval(() => dataHandle.saveInfo(), 60000 * 5);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,7 +37,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => dataHandle.record(req, res, next));
 
 fs.readdirSync(path.join(__dirname, 'routes')).reverse().forEach(file => {
   const filename = file.replace(/\.js$/, '');
